@@ -1,0 +1,5 @@
+EXIT = "exit"
+PURCHASE = "purchase"
+ALL = "all"
+CLEAR = "clear"
+REPORT = "report"
