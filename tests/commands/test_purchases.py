@@ -1,5 +1,4 @@
 import unittest
-from models import Purchase
 from commands import PurchaseCommands
 from unittest.mock import MagicMock
 import constants.errors as errors
