@@ -9,6 +9,7 @@ To start working:
 > cd annual-income-statistics/
 
 2 Install dependencies:
+should be installed Python3
 > pip install -r requirements.txt
 
 3 Start app:
