@@ -3,8 +3,8 @@ from constants import CURRENCY_CODES
 
 def validateDate(date):
     try:
-        datetime.strptime(date, '%Y-%m-%d')
-        return True
+        date = datetime.strptime(date, '%Y-%m-%d')
+        return date <= datetime.now()
     except:
         return False
 

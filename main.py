@@ -22,7 +22,6 @@ while(1):
             purchaseCommands.report(*params)
     except Exception as error:
         print('Program failed. Error: {}'.format(error.__str__()))
-        raise error
 
 
 
