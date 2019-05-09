@@ -8,11 +8,11 @@ BASE_CURRENCY = 'EUR'
 
 class CurrencyService:
     def transformCurrencyRrates(self, baseCurrency, currencyRates):
-        _currencyRates = currencyRates
-        for key in _currencyRates:
-            _currencyRates[key] = _currencyRates[key] / _currencyRates[baseCurrency]
+        resultRates = {}
+        for key in currencyRates:
+            resultRates[key] = currencyRates[key] / currencyRates[baseCurrency]
 
-        return _currencyRates
+        return resultRates
 
 
     def getCurrencyRates(self, baseCurrency, currenciesList):

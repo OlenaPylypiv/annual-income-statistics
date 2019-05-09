@@ -1,33 +1,38 @@
 import unittest
 from commands import PurchaseCommands
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import constants.errors as errors
+from models import Purchase
 
 class TestPurchaseCommands(unittest.TestCase):
 
-    def setUp(self):
-        self.testDate = '2019-05-12'
+    @patch('commands.controllers.PurchaseController')
+    def setUp(self, mockedController):
+        self.testDate = '2019-05-04'
         self.testAmount = '120'
         self.testCurrency = 'UAH'
         self.testName = 'test purchase'
+        
+        testPurchases = [Purchase(self.testDate, self.testAmount, self.testCurrency, self.testName)]
+        mock = mockedController.return_value
+        mock.addPurchase.return_value = testPurchases
+        mock.removeByDate.return_value = []
+        self.mockReportResult = 100
+        mock.report.return_value = self.mockReportResult
         self.purchaseCommands = PurchaseCommands()
 
     def test_report(self):
 
         mockCurrencyRate = 2
-        self.purchaseCommands.currencyService.getCurrencyRates = MagicMock(return_value={'UAH': mockCurrencyRate})
-        self.purchaseCommands.addPurchases(self.testDate, self.testAmount, self.testCurrency, self.testName)
 
         testYear = '2019'
         testCurrency = 'EUR'
         totalSum = self.purchaseCommands.report(testYear, testCurrency)
 
-        self.assertEqual(totalSum, float(self.testAmount) / mockCurrencyRate)
+        self.assertEqual(totalSum, self.mockReportResult)
 
     def test_incorrectReport(self):
-        mockCurrencyRate = 2
         incorrectCurrency = 'AS'
-        self.purchaseCommands.currencyService.getCurrencyRates = MagicMock(return_value={'UAH': mockCurrencyRate})
 
         try:
             self.purchaseCommands.addPurchases(self.testDate, self.testAmount, incorrectCurrency, self.testName)
@@ -36,13 +41,9 @@ class TestPurchaseCommands(unittest.TestCase):
             self.assertEqual(error.__str__(), errors.INCORRECT_CURRENCY)
 
     def test_addPurchase(self):
-
-
-      purchases = self.purchaseCommands.addPurchases(self.testDate, self.testAmount, self.testCurrency, self.testName)
-
-      self.assertEqual(len(purchases), 1)
-      self.assertEqual(purchases[0].date, self.testDate)
-      self.assertEqual(purchases[0].amount, self.testAmount)
+        purchases = self.purchaseCommands.addPurchases(self.testDate, self.testAmount, self.testCurrency, self.testName)
+        self.assertGreater(len(purchases), 0)
+     
 
     def test_addIncorrectPurchase(self):
 
@@ -70,11 +71,10 @@ class TestPurchaseCommands(unittest.TestCase):
 
 
     def test_removeByDate(self):
-      testDate = '2019-05-12'
       self.purchaseCommands.addPurchases(self.testDate, self.testAmount, self.testCurrency, self.testName)
-      purchases = self.purchaseCommands.removeByDate(testDate)
+      purchases = self.purchaseCommands.removeByDate(self.testDate)
       for purchase in purchases:
-          self.assertNotEqual(purchase['date'], testDate)
+          self.assertNotEqual(purchase.date, self.testDate)
 
     def test_removeByIncorrectDate(self):
         incorrectDate = '2019-15-30'

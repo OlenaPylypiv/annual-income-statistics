@@ -12,8 +12,9 @@ class TestCurrencyService(unittest.TestCase):
             "base":"EUR",
             "date":"2019-05-06",
             "rates": {
-                "UAH":1,
-                "PLN":2
+                "UAH":4,
+                "PLN":6,
+                "EUR": 2
             }
         }
         mockGet.return_value = Mock(ok=True)
@@ -24,7 +25,7 @@ class TestCurrencyService(unittest.TestCase):
         currencyService = CurrencyService()
 
         rates = currencyService.getCurrencyRates(testBaseCurrency, testCurrenciesList)
-        self.assertEqual(rates,{"UAH":1,"PLN":2})
+        self.assertEqual(rates,{"UAH":2,"PLN":3,"EUR":1})
 
     @patch('services.requests.get')
     def test_getCurrencyRatesWithEmptyResponse(self, mockGet):
