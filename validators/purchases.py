@@ -1,4 +1,5 @@
 from datetime import datetime
+from constants import CURRENCY_CODES
 
 def validateDate(date):
     try:
@@ -8,7 +9,7 @@ def validateDate(date):
         return False
 
 def validateCurrency(currency):
-    return isinstance(currency, str) and len(currency) == 3
+    return currency in CURRENCY_CODES
 
 def validatePrice(price):
     try:

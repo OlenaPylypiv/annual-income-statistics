@@ -79,7 +79,7 @@ class PurchaseCommands:
                 totalSum += float(val.amount)/rates[val.currency]
 
         if (totalSum != 0):
-            print(str(totalSum) + ' EUR')
+            print("{} {}".format(str(totalSum), baseCurrency))
         else:
             print('There are no record on {} year '.format(year))
         return totalSum

@@ -4,15 +4,29 @@ import constants.errors as errors
 CURRENCY_ENDPOINT = 'http://data.fixer.io/api/latest'
 API_KEY = 'e35361a61a0e88224e2c8eb53bda1a88'
 
+BASE_CURRENCY = 'EUR'
+
 class CurrencyService:
+    def transformCurrencyRrates(self, baseCurrency, currencyRates):
+        _currencyRates = currencyRates
+        for key in _currencyRates:
+            _currencyRates[key] = _currencyRates[key] / _currencyRates[baseCurrency]
+
+        return _currencyRates
+
+
     def getCurrencyRates(self, baseCurrency, currenciesList):
-        url = '{}?access_key={}&base={}&symbols={}'.format(CURRENCY_ENDPOINT, API_KEY, baseCurrency, ','.join(currenciesList))
+        _currencyList = currenciesList
+        if not (baseCurrency in _currencyList):
+            _currencyList.append(baseCurrency)
+
+        url = '{}?access_key={}&base={}&symbols={}'.format(CURRENCY_ENDPOINT, API_KEY, BASE_CURRENCY, ','.join(_currencyList))
         try:
             response = requests.get(url)
             jsonRes = response.json()
             if jsonRes['success']:
                 if 'rates' in jsonRes:
-                    return jsonRes['rates']
+                    return self.transformCurrencyRrates(baseCurrency, jsonRes['rates'])
                 else:
                     raise Exception(errors.MISSING_RATES)
             else:
