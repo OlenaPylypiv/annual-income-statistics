@@ -13,7 +13,8 @@ should be installed Python3
 > pip install -r requirements.txt
 
 3 Start app:
-> python main.py
+>Linux: python3 main.py
+>Windows: python main.py
 
     3.1 Enter a command: purchase 2019-04-25 12 USD "Photo Frame", all ...
     3.2 Exit: to stop the program enter "exit"
