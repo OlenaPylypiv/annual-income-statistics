@@ -2,15 +2,18 @@ import itertools
 from datetime import datetime
 from typing import List
 from models import Purchase
-from services import CurrencyService
+from services import CurrencyService, PurchaseDB
 from validators import validateCurrency, validateDate, validatePrice
 import constants.errors as errors
 
 class PurchaseCommands:
 
     def __init__(self):
-        self.__purchases: List[Purchase] = []
+
+       
         self.currencyService = CurrencyService()
+        self.purchaseDB = PurchaseDB()
+        self.__purchases: List[Purchase] = self.purchaseDB.getPurchases() or []
 
     def showAll(self):
         sortedPurchases = self.__purchases
@@ -37,6 +40,8 @@ class PurchaseCommands:
             raise Exception(errors.INCORRECT_CURRENCY)
 
         self.__purchases.append(Purchase(date, amount, currency, name))
+
+        self.purchaseDB.savePurchases(self.__purchases)
         self.showAll()
 
         return self.__purchases
@@ -46,9 +51,9 @@ class PurchaseCommands:
         if not validateDate(date):
             raise Exception(errors.INCORRECT_DATE)
 
-        for i, val in enumerate(self.__purchases):
-            if val.date == date:
-                self.__purchases.pop(i)
+        self.__purchases = [purchase for purchase in self.__purchases if purchase.date != date]
+        
+        self.purchaseDB.savePurchases(self.__purchases)
         self.showAll()
 
         return self.__purchases
